@@ -24,7 +24,7 @@ jobs:
         with:
           context: ./webapp
           push: true
-          # Hardcoded lowercase name to bypass the naming error
+          # Manually set to lowercase "cloud_tech"
           tags: ghcr.io/placky02/cloud_tech/webapp:latest
 
       - name: Scan
