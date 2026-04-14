@@ -5,14 +5,12 @@ on: [push]
 jobs:
   build-and-scan:
     runs-on: ubuntu-latest
-    permissions: { contents: read, packages: write }
+    permissions: 
+      contents: read
+      packages: write
     steps:
-      - uses: actions/checkout@v4
-
-      # This step fixes the uppercase error by creating a lowercase variable
-      - name: Lowercase repo name
-        run: |
-          echo "IMAGE_TAG=ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}/webapp:latest" | tr '[:upper:]' '[:lower:]' >> $GITHUB_ENV
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Login to GHCR
         uses: docker/login-action@v3
@@ -26,11 +24,11 @@ jobs:
         with:
           context: ./webapp
           push: true
-          # Uses the lowercase variable we just created
-          tags: ${{ env.IMAGE_TAG }}
+          # Hardcoded lowercase name to bypass the naming error
+          tags: ghcr.io/placky02/cloud_tech/webapp:latest
 
       - name: Scan
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ env.IMAGE_TAG }}
+          image-ref: ghcr.io/placky02/cloud_tech/webapp:latest
           severity: 'CRITICAL,HIGH'
